@@ -96,6 +96,8 @@ app.post('/api/productos', (req, res) => {
         })
 })
 
+/* Actualización de datos */
+
 app.put('/api/productos/:id', (req, res) => {
     const item = {
         ...req.body,
@@ -119,6 +121,8 @@ app.put('/api/productos/:id', (req, res) => {
             res.sendStatus(500)
         })
 })
+
+/* Borrando datos */
 
 app.delete('/api/productos/:id', (req, res) => {
     const params = {
