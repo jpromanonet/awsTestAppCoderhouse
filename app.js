@@ -96,3 +96,27 @@ app.post('/api/productos', (req, res) => {
         })
 })
 
+app.put('/api/productos/:id', (req, res) => {
+    const item = {
+        ...req.body,
+        productId: req.params.id
+    }
+    const params = {
+        TableName: TABLE_NAME,
+        Items: Item
+    }
+    dynamodb.put(params).promise()
+        .then(() => {
+            const body = {
+                Operation: 'UPDATE',
+                Message: 'SUCCESS',
+                Item: Item
+            }
+            res.json(body);
+        })
+        .catch(erro => {
+            console.error('Ocurrio un error', error)
+            res.sendStatus(500)
+        })
+})
+
