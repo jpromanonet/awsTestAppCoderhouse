@@ -3,5 +3,5 @@
 ## ARN del Topico SNS
 
 ```
-arn: arn:aws:sns:us-east-2:164802116698:notificaciones
+arn:aws:sns:us-east-2:164802116698:notificaciones
 ```
