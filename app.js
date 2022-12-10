@@ -143,3 +143,19 @@ app.delete('/api/productos/:id', (req, res) => {
         })
 })
 
+async function scanDynamoRecords(scanParams) {
+    try {
+        let dynamoData = await dynamodb.scan(scanParams).promise();
+        const items = dynamoData.items
+        while (dynamoData.LastEvaluatedKey) {
+            scanParams.ExclusiveStartKey = dynamoData.LastEvaluatedKey;
+            dynamoData = await dynamodb.scan(scanParams).promise();
+            items.push(...dynamoData.Items);
+        }
+        return items;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+/* Configurar el servidor */
