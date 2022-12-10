@@ -3,6 +3,7 @@
 const express = require('express')
 const AWS = require('aws-sdk')
 const { AppStream } = require('aws-sdk')
+const { response } = require('express')
 
 /* Configurar la región de AWS */
 AWS.config.update({
@@ -40,3 +41,19 @@ app.get('/api/productos', async (req, res) => {
     }
 })
 
+app.get('/api/productos/:id', (req, res) => {
+    const params = {
+        TableName: TABLE_NAME,
+        Key: {
+            'productId': req.params.id
+        }
+    }
+    dynamodb.get(params).promise()
+        .then(response => {
+            res.json(response.Item);
+        })
+        .catch(error => {
+            console.error('Ocurrio un error: ', error);
+            res.sendStatus(500);
+        })
+})
