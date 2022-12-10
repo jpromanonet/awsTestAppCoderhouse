@@ -24,9 +24,13 @@ const TABLE_NAME = 'product-inventory';
 const app = express();
 app.use(express.json());
 
+/* Testeando la API */
+
 app.get('/', (req, res) => {
     res.send("test API")
 })
+
+/* Traernos datos de la base completa o por ID */
 
 app.get('/api/productos', async (req, res) => {
     const params = {
@@ -55,5 +59,24 @@ app.get('/api/productos/:id', (req, res) => {
         .catch(error => {
             console.error('Ocurrio un error: ', error);
             res.sendStatus(500);
+        })
+})
+
+/* Aca guardamos datos en DynamoDB */
+
+app.post('/api/productos', (req, res) => {
+    const params = {
+        TableName: TABLE_NAME,
+        Item: req.body
+    }
+    dynamodb.put(params).promise()
+        .then(() => {
+            console.log("Objeto guardado con exito")
+            const prod = JSON.stringify(req.body)
+            return sns.publish({
+                Message: `Nuevo producto agregado: ${prod}`,
+                Subject: 'Nuevo producto agreado!',
+                TopicArn: SNS_TOPIC_ARN
+            }).promise()
         })
 })
