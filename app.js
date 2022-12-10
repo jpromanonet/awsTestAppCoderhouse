@@ -120,3 +120,26 @@ app.put('/api/productos/:id', (req, res) => {
         })
 })
 
+app.delete('/api/productos/:id', (req, res) => {
+    const params = {
+        TableName: TABLE_NAME,
+        Key: {
+            productId: req.params.id
+        },
+        ReturnValues: 'ALL_OLD'
+    }
+    dynamodb.delete(params).promise()
+        .then(response => {
+            const body = {
+                Operation: 'DELETE',
+                Message: "SUCCESS",
+                Item: response
+            }
+            res.json(body)
+        })
+        .catch(error => {
+            console.error('Ocurrio un error', error);
+            res.sendStatus(500);
+        })
+})
+
