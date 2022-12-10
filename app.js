@@ -2,7 +2,7 @@
 
 const express = require('express')
 const AWS = require('aws-sdk')
-const { AppStream } = require('aws-sdk')
+const { AppStream, Redshift } = require('aws-sdk')
 const { response } = require('express')
 
 /* Configurar la región de AWS */
@@ -79,4 +79,20 @@ app.post('/api/productos', (req, res) => {
                 TopicArn: SNS_TOPIC_ARN
             }).promise()
         })
+        .then(data => {
+            console.log('Se notifico')
+            console.log(data)
+
+            const body = {
+                Operation: 'SAVE',
+                Message: "SUCCESS",
+                Item: req.body
+            }
+            res.json(body);
+        })
+        .catch(error => {
+            console.error('Ocurrio un error: ', error);
+            res.status(500).end();
+        })
 })
+
